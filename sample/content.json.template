@@ -1,0 +1,23 @@
+{
+  "Format": "1.30.0",
+  "Changes": [
+    {
+      "LogName": "加载自定义角色精灵图",
+      "Action": "Load",
+      "Target": "Characters/{{NPC_NAME}}",
+      "FromFile": "assets/Characters/{{NPC_NAME}}.png"
+    },
+    {
+      "LogName": "加载自定义角色肖像",
+      "Action": "Load",
+      "Target": "Portraits/{{NPC_NAME}}",
+      "FromFile": "assets/Portraits/{{NPC_NAME}}.png"
+    },
+    {
+      "LogName": "加载自定义对话",
+      "Action": "Load",
+      "Target": "Dialogue/{{NPC_NAME}}",
+      "FromFile": "assets/Dialogue/{{NPC_NAME}}.json"
+    }
+  ]
+}

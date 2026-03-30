@@ -1,0 +1,11 @@
+# 用户本地配置
+config/paths.env
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

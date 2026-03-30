@@ -1,0 +1,105 @@
+<!-- ============================================================ -->
+<!-- 星露谷物语 Mod 项目文件模板                                    -->
+<!-- ============================================================ -->
+<!-- 占位符:                                                       -->
+<!--   {{MOD_NAME}} - Mod 名称（与 manifest.json 中 EntryDll 一致） -->
+<!-- ============================================================ -->
+<!-- 参考来源: Pathoschild/SMAPI 官方推荐配置                       -->
+<!-- ============================================================ -->
+
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <!-- === C# 源文件 === -->
+  <ItemGroup>
+    <Compile Include="**/*.cs" />
+  </ItemGroup>
+
+  <!-- === NuGet 依赖 === -->
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <!-- === DLL 引用（Stardew Valley + SMAPI） === -->
+  <!-- 使用 $(HOME) 确保跨用户兼容 -->
+  <ItemGroup>
+    <!-- SMAPI 核心 -->
+    <Reference Include="StardewModdingAPI">
+      <HintPath>$(HOME)/Library/Application Support/Steam/steamapps/common/Stardew Valley/Contents/MacOS/StardewModdingAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <!-- Stardew Valley 游戏本体 -->
+    <Reference Include="Stardew Valley">
+      <HintPath>$(HOME)/Library/Application Support/Steam/steamapps/common/Stardew Valley/Contents/MacOS/Stardew Valley.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <!-- MonoGame 图形框架 -->
+    <Reference Include="MonoGame.Framework">
+      <HintPath>$(HOME)/Library/Application Support/Steam/steamapps/common/Stardew Valley/Contents/MacOS/MonoGame.Framework.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- === 资源文件复制 === -->
+  <ItemGroup>
+    <!-- manifest.json 必须复制到输出目录 -->
+    <None Update="manifest.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+
+    <!-- content.json（Content Patcher 配置，可选） -->
+    <None Update="content.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+
+    <!-- assets 目录下所有资源文件 -->
+    <None Update="assets/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <!-- === 构建后自动部署到 Mods 目录 === -->
+  <Target Name="CopyToMods" AfterTargets="Build">
+    <PropertyGroup>
+      <ModDeployDir>$(HOME)/Library/Application Support/Steam/steamapps/common/Stardew Valley/Contents/MacOS/Mods/{{MOD_NAME}}</ModDeployDir>
+    </PropertyGroup>
+
+    <!-- 确保目标目录存在 -->
+    <MakeDir Directories="$(ModDeployDir)" />
+
+    <!-- 复制 DLL -->
+    <Copy
+      SourceFiles="$(TargetDir)$(TargetName).dll"
+      DestinationFolder="$(ModDeployDir)"
+      SkipUnchangedFiles="true" />
+
+    <!-- 复制 manifest.json -->
+    <Copy
+      SourceFiles="$(ProjectDir)manifest.json"
+      DestinationFolder="$(ModDeployDir)"
+      SkipUnchangedFiles="true" />
+
+    <!-- 复制 content.json（如果存在） -->
+    <Copy
+      SourceFiles="$(ProjectDir)content.json"
+      DestinationFolder="$(ModDeployDir)"
+      SkipUnchangedFiles="true"
+      Condition="Exists('$(ProjectDir)content.json')" />
+
+    <!-- 复制 assets 目录 -->
+    <ItemGroup>
+      <AssetFiles Include="$(ProjectDir)assets/**/*" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(AssetFiles)"
+      DestinationFiles="@(AssetFiles->'$(ModDeployDir)/assets/%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

@@ -1,0 +1,16 @@
+{
+  "Name": "{{MOD_DISPLAY_NAME}}",
+  "Author": "{{AUTHOR}}",
+  "Version": "1.0.0",
+  "Description": "{{MOD_DESCRIPTION}}",
+  "UniqueId": "{{AUTHOR}}.{{MOD_NAME}}",
+  "EntryDll": "{{MOD_NAME}}.dll",
+  "MinimumApiVersion": "4.0.0",
+  "Dependencies": [
+    {
+      "UniqueId": "Pathoschild.ContentPatcher",
+      "IsRequired": false
+    }
+  ],
+  "UpdateKeys": []
+}

@@ -1,0 +1,17 @@
+{
+  "name": "stardew-moddev-skills",
+  "version": "1.0.0",
+  "description": "星露谷物语 Mod 完整开发技能套件。涵盖环境搭建、Mod 创建、SMAPI 开发工作流、调试排查、Content Patcher 配置。",
+  "author": {
+    "name": "AUPaiDev"
+  },
+  "repository": "https://github.com/AUPaiDev/stardew-moddev-skills",
+  "license": "MIT",
+  "keywords": [
+    "stardew-valley",
+    "smapi",
+    "mod-development",
+    "content-patcher",
+    "game-modding"
+  ]
+}

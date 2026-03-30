@@ -1,0 +1,227 @@
+// ============================================================
+// 星露谷物语 Mod 入口模板
+// ============================================================
+// 使用方法：将 {{MOD_NAMESPACE}} 替换为你的 Mod 命名空间
+//          将 {{MOD_NAME}} 替换为你的 Mod 名称
+// ============================================================
+// 参考来源：Pathoschild/SMAPI 官方 API
+// ============================================================
+
+using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StardewModdingAPI;
+using StardewModdingAPI.Events;
+using StardewValley;
+
+namespace {{MOD_NAMESPACE}}
+{
+    /// <summary>Mod 主入口类</summary>
+    public class ModEntry : Mod
+    {
+        // ============================
+        // 静态引用（供其他类访问）
+        // ============================
+        public static ModEntry Instance { get; private set; }
+
+        // ============================
+        // Mod 入口点
+        // ============================
+
+        /// <summary>SMAPI 加载 Mod 时调用</summary>
+        public override void Entry(IModHelper helper)
+        {
+            Instance = this;
+
+            // --- 注册 SMAPI 事件 ---
+
+            // 游戏循环事件
+            helper.Events.GameLoop.GameLaunched += OnGameLaunched;
+            helper.Events.GameLoop.SaveLoaded += OnSaveLoaded;
+            helper.Events.GameLoop.Saving += OnSaving;
+            helper.Events.GameLoop.DayStarted += OnDayStarted;
+            helper.Events.GameLoop.TimeChanged += OnTimeChanged;
+
+            // 玩家输入事件
+            helper.Events.Input.ButtonPressed += OnButtonPressed;
+
+            // 内容/资源事件（用于自定义精灵图、肖像等）
+            helper.Events.Content.AssetRequested += OnAssetRequested;
+
+            Monitor.Log("{{MOD_NAME}} 已加载", LogLevel.Info);
+        }
+
+        // ============================
+        // 游戏循环事件处理
+        // ============================
+
+        /// <summary>游戏启动完成后</summary>
+        private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+        {
+            // 在这里初始化与其他 Mod 的集成
+            // 例如：检查 Content Patcher 是否安装
+            // var contentPatcherApi = Helper.ModRegistry.GetApi("Pathoschild.ContentPatcher");
+        }
+
+        /// <summary>存档加载后</summary>
+        private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+        {
+            // 加载持久化数据
+            // var data = Helper.Data.ReadSaveData<MyModData>("{{MOD_NAME}}.SaveData");
+
+            Monitor.Log("存档已加载", LogLevel.Debug);
+        }
+
+        /// <summary>保存前</summary>
+        private void OnSaving(object sender, SavingEventArgs e)
+        {
+            // 保存持久化数据
+            // Helper.Data.WriteSaveData("{{MOD_NAME}}.SaveData", myData);
+        }
+
+        /// <summary>每日开始时</summary>
+        private void OnDayStarted(object sender, DayStartedEventArgs e)
+        {
+            // 【重要】始终检查世界是否准备就绪
+            if (!Context.IsWorldReady)
+                return;
+
+            // 获取当前日期信息
+            string season = Game1.currentSeason;
+            int day = Game1.dayOfMonth;
+
+            Monitor.Log($"新的一天: {season} {day}", LogLevel.Debug);
+
+            // --- NPC 生成示例 ---
+            // SpawnCustomNpc();
+
+            // --- HUD 消息示例 ---
+            // Game1.addHUDMessage(new HUDMessage("欢迎来到新的一天！", 2));
+        }
+
+        /// <summary>游戏时间变化时（每 10 分钟游戏时间）</summary>
+        private void OnTimeChanged(object sender, TimeChangedEventArgs e)
+        {
+            if (!Context.IsWorldReady)
+                return;
+
+            // e.NewTime 格式: 600 = 6:00 AM, 1300 = 1:00 PM
+            // int currentTime = e.NewTime;
+        }
+
+        // ============================
+        // 玩家输入处理
+        // ============================
+
+        /// <summary>按键按下时</summary>
+        private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
+        {
+            if (!Context.IsWorldReady)
+                return;
+
+            // 示例：按 F5 触发自定义功能
+            if (e.Button == SButton.F5)
+            {
+                Monitor.Log("F5 被按下", LogLevel.Debug);
+            }
+
+            // 示例：检测动作键（右键/X键）与 NPC 交互
+            // if (e.Button.IsActionButton())
+            // {
+            //     var npc = Game1.currentLocation?.isCharacterAtTile(
+            //         Game1.player.getTileLocation() + GetFacingOffset()
+            //     );
+            //     if (npc != null)
+            //     {
+            //         // 处理 NPC 交互
+            //     }
+            // }
+        }
+
+        // ============================
+        // 资源加载（Content API）
+        // ============================
+
+        /// <summary>游戏请求资源时</summary>
+        private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+        {
+            // --- 加载自定义精灵图 ---
+            // if (e.NameWithoutLocale.IsEquivalentTo("Characters/MyNpc"))
+            // {
+            //     e.LoadFromModFile<Texture2D>("assets/Characters/MyNpc.png",
+            //         AssetLoadPriority.High);
+            // }
+
+            // --- 加载自定义肖像 ---
+            // if (e.NameWithoutLocale.IsEquivalentTo("Portraits/MyNpc"))
+            // {
+            //     e.LoadFromModFile<Texture2D>("assets/Portraits/MyNpc.png",
+            //         AssetLoadPriority.High);
+            // }
+
+            // --- 编辑现有资源 ---
+            // if (e.NameWithoutLocale.IsEquivalentTo("Data/NPCDispositions"))
+            // {
+            //     e.Edit(asset =>
+            //     {
+            //         var data = asset.AsDictionary<string, string>();
+            //         data.Data["MyNpc"] = "...";
+            //     });
+            // }
+        }
+
+        // ============================
+        // NPC 创建辅助方法
+        // ============================
+
+        /// <summary>在指定位置生成自定义 NPC</summary>
+        private void SpawnCustomNpc()
+        {
+            string npcName = "MyNpc";
+            GameLocation location = Game1.getLocationFromName("FarmHouse");
+
+            if (location == null)
+                return;
+
+            // 检查 NPC 是否已存在
+            if (location.getCharacterFromName(npcName) != null)
+                return;
+
+            // 创建 NPC
+            // 参数: AnimatedSprite, position, defaultFacingDirection, name
+            var sprite = new AnimatedSprite(
+                $"Characters/{npcName}",  // 精灵图资源路径
+                0,                         // 起始帧
+                16,                        // 帧宽度
+                32                         // 帧高度
+            );
+
+            Vector2 tilePosition = new Vector2(5, 5);
+            NPC npc = new NPC(
+                sprite,
+                tilePosition * 64f,  // 像素位置 = 格子位置 × 64
+                2,                    // 朝向（0=上, 1=右, 2=下, 3=左）
+                npcName
+            );
+
+            location.addCharacter(npc);
+
+            // 设置对话
+            npc.CurrentDialogue.Push(new Dialogue(npc, null, "你好！我是新来的NPC。"));
+
+            Monitor.Log($"NPC {npcName} 已生成在 {location.Name}", LogLevel.Info);
+        }
+
+        // ============================
+        // 数据持久化示例
+        // ============================
+
+        // 定义保存数据结构
+        // private class MyModData
+        // {
+        //     public int Level { get; set; } = 0;
+        //     public Dictionary<string, int> Progress { get; set; } = new();
+        // }
+    }
+}
