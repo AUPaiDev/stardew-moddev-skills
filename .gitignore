@@ -9,3 +9,5 @@ config/paths.env
 .vscode/
 *.swp
 *.swo
+
+.claude/
