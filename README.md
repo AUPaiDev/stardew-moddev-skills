@@ -6,6 +6,9 @@
 
 ## 安装
 
+testteststsatd
+d
+
 ### 步骤 1：添加 marketplace
 
 ```bash
@@ -14,6 +17,8 @@ claude plugins marketplace add git@github.com:AUPaiDev/stardew-moddev-skills.git
 
 ### 步骤 2：安装插件
 
+
+sdasda. 
 ```bash
 claude plugins install stardew-moddev-skills@stardew-moddev
 ```
@@ -59,6 +64,10 @@ stardew-moddev-skills/
 │       │   ├── dev-workflow/
 │       │   ├── debug/
 │       │   └── content-patcher/
+
+sdad ad
+
+fdw e
 │       ├── scripts/                 # 自动化脚本
 │       ├── sample/                  # 模板文件
 │       └── config/                  # 配置文件
